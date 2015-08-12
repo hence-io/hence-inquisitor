@@ -25,10 +25,11 @@ and optional flag to output directly to console, or by default returns as a stri
 * ```glush.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
 * ```glush.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
 
+This command:
 ```javascript
 glush.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
 ```
-Outputs:
+Will output:
 ```
   ____  _____ _   _ _____
  |  _ \|  _  | \ | | ____|
