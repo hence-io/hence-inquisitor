@@ -15,8 +15,28 @@ var glush = require('glush-util');
 
 ### Ascii
 
+Some console helpers to provide standard formatting of headers, and some acsii art.  Each take a message/label, and
+and optional flag to output directly to console, or by default returns as a string.
+
+* ```glush.ascii.heading(msg, log)``` - A bold underlined heading with double spacing above, and single below
+* ```glush.ascii.spacer(log)``` - A line separator of ------
+* ```glush.ascii.hence(msg, log)``` - Ascii art of the Hence.io brand, with msg being and optional description following
+* ```glush.ascii.complete(msg, log)``` - Ascii art of the word Complete, with msg being and optional description following
+* ```glush.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
+* ```glush.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
+
 ```javascript
-glush.ascii.done("You're all done!", true); // Outputs directly to console with optional flag
+glush.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
+```
+Outputs:
+```
+  ____  _____ _   _ _____
+ |  _ \|  _  | \ | | ____|
+ | | | | | | |  \| |  _|
+ | |_| | |_| | |\  | |___
+ |____/|_____|_| \_|_____|
+
+ Thank you for using the Scaffolding Tool!
 ```
 
 ### Slush Specific
