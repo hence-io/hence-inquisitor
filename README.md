@@ -7,46 +7,124 @@ Utilities for gulp plugins & slush scaffolding, build on gulp-util.
 This is an extension built on top of [gulp-util](https://github.com/gulpjs/gulp-util), giving you access to the tools
  you know, as well as some new tools for your belt.
 
-## Usage
+### Usage
+
+```bash
+$ npm i --save hence-io/glush-util
+```
 
 ```javascript
 var glush = require('glush-util');
 ```
 
-### Ascii
+>
 
-Some console helpers to provide standard formatting of headers, and some acsii art.  Each take a message/label, and
-and optional flag to output directly to console, or by default returns as a string.
+## Streamlined Scaffolding
 
-* ```glush.ascii.heading(msg, log)``` - A bold underlined heading with double spacing above, and single below
-* ```glush.ascii.spacer(log)``` - A line separator of ------
-* ```glush.ascii.hence(msg, log)``` - Ascii art of the Hence.io brand, with msg being and optional description following
-* ```glush.ascii.complete(msg, log)``` - Ascii art of the word Complete, with msg being and optional description following
-* ```glush.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
-* ```glush.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
+There are any number of was of creating a slush scaffolding generator, and while it is open and unrestricted,
+something is lost when no standards are applied to the process in how to build these.
 
-This command:
+Glush-util in part was born out of this, seeing the need and desire of having some reusable scaffolding structure,
+while remaining as flexible as possible. One library in particular was leveraged to help achieve this goal in
+managing a console based installer, and that library is [inquirer](https://github.com/sboudrias/Inquirer.js).
+
+The Scaffold & ScaffoldStep built on top of inquirer allow you to rapid create new generators with ease. Breaking
+down the overall installer and it's prompts into meaningful steps by grouping concerns, offers a smaller more
+manageable generator, presented in a wizardequse style. This also allows you to easily share steps across
+multiple sub-generators (or other generators) with ease, helping to keep your generators DRY.
+
+While these tools were primarily designed to assist in creating Slush generators, they can be adopted to power any node
+based scaffolding tool you may require. Nothing is imposed on what the installer does, it's up to you.
+
+### glush.Scaffold
+
+#### Purpose
+
+Scaffold is used to define your installer.
+
+* ```defaults``` Assigning some default options and settings, which will be inherited and accessible to any steps you
+add. This is
+handy for common shared options or things like folder paths.
+* ```content``` Providing some helpful intro and completion copy to detail to users what your installer will do, and any
+ helpful
+tips as they're finishing things up.
+* ```inquirer``` Allowing you to define inquirer specific checks accessible to each step, handy for when checks on
+prompts.
+* ```install``` Managing how the installation takes place once all of the steps have been executed, providing you a
+communal pool
+of the final adjusted answers.
+
+Once defined, you can kick start the install process whenever you're ready, triggered by a slush/gulp task or by
+whatever CLI tools you're leveraging.
+
+#### Usage
+
 ```javascript
-glush.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
+var scaffold = glush.Scaffold({
+  // Set some default options
+  defaults : {
+      someOption: true,
+      dependencies: require('./dependencies.json')
+  },
+  content = {
+    // Starts off the scaffold installer with an intro message
+    intro: glush.ascii.heading("Welcome to this installer!") + "Follow the prompts to create your package"
+    // When the install completes, this adds a DONE ascii art header, and your description below it easily
+    done: glush.ascii.done("You're all done installing your package!")
+  },
+  inquirer {
+    // Provide a validation check as to whether or not to include a prompt based on this check.
+    allowThisQuestions: function() {
+      return scaffold.answers.someOption === false
+    }
+  },
+  // Process and install
+  install: function (answers) {
+    // Provides all of the prompted answers to act upon here, likely creating optional pipes
+    return gulp.src(answers.files)
+      .pipe(doStuff())
+      .pipe(gulp.dest(outputFolder);
+    // Returning the stream ensures the Scaffold will execute a .on('end'...) and display the done message
+  }
+});
+
+
+// Launch the installer
+gulp.task('default', function(done){
+  scaffold.start([require('./step1')],done);
+);
 ```
-Will output:
-```
-  ____  _____ _   _ _____
- |  _ \|  _  | \ | | ____|
- | | | | | | |  \| |  _|
- | |_| | |_| | |\  | |___
- |____/|_____|_| \_|_____|
 
- Thank you for using the Scaffolding Tool!
-```
+##### The Scaffold Process
 
-### Slush Specific
+1. ```scaffold.start(steps,doneFn)``` Start will begin the install, by storing and initializing the steps passed in.
+Each
+step is provided a reference to the scaffold object. The installers intro copy will display if provided, and then
+begin to run the first step object.
+2. ```stepX.process(answers)``` The installer will run inquirer against the steps prompts (or by pass them all if they
+ all fail their when checks if provided) and begin to process those answers. The complete set of answers is stored on
+  the scaffold object itself, and ongoing set of answers are shared between each step.
+3. ```scaffold.install(answers)``` When all of the steps have finished processing, the final set of answers is ready
+to be acted upon and allow you to perform your desired install method.
 
-### ScaffoldStep
+### glush.ScaffoldStep
 
-Create isolated steps are part of your scaffold installation, letting each define and managed it's set of options,
-defaults (ensuring they're set should questions be bypassed), it's prompts to produce using inquirer, and processing
-those results before carrying on to the next step.
+#### Purpose
+
+ScaffoldStep is used to help define an isolated set of inquirer prompts to be used by a Scaffold installer.
+
+* ```options``` Define a set of unique options supporting the prompts in this step.
+* ```defaults``` Set the default options which should be assigned, even if the prompt doesn't pass it's when check.
+* ```content``` Controls the console output before and after the step, allowing you to leverage built in Glush
+formatting easily.
+* ```prompts[]``` Provide the various questions to be posed to the user for this step.
+* ```process(answers)``` Process, format, and extend the answer set based on the answers the user provide for the
+prompts in this step, leveraging questions answered in previous steps or defaults from the scaffold.
+
+The ScaffoldSteps are utilized automatically from the Scaffold, and do not require you to manually execute them, or
+share the data between them, it's already handled for you so you can focus on what's important.
+
+#### Usage
 
 ```javascript
 var options = {
@@ -110,35 +188,35 @@ var step = glush.ScaffoldStep({
 });
 ```
 
-### Scaffold
+module.exports = step;
+>
 
-Create a unified scaffold installer, with any number of steps, providing some initial default options, and handling
-the installation with the resulting set of answers from each questions prompts.
+## Supporting Tools
 
+### Ascii
+
+Some console helpers to provide standard formatting of headers, and some acsii art.  Each take a message/label, and
+and optional flag to output directly to console, or by default returns as a string.
+
+* ```glush.ascii.heading(msg, log)``` - A bold underlined heading with double spacing above, and single below
+* ```glush.ascii.spacer(log)``` - A line separator of ------
+* ```glush.ascii.complete(msg, log)``` - Ascii art of the word Complete, with msg being and optional description following
+* ```glush.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
+* ```glush.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
+
+This command:
 ```javascript
-var scaffold = glush.Scaffold({
-  // Set some default options
-  defaults : {
-      someOption: true,
-      dependencies: require('./dependencies.json')
-  },
-  // Content to
-  content = {
-    // Starts off the scaffold installer with an intro message
-    intro: glush.ascii.heading("Welcome to this installer!") + "Follow the prompts to create your package"
-    // When the install completes, this adds a DONE ascii art header, and your description below it easily
-    done: glush.ascii.done("You're all done installing your package!")
-  },
-  install: function (answers) {
-    // Provides all of the prompted answers to act upon here, likely creating optional pipes
-    return gulp.src(answers.files)
-      .pipe(doStuff())
-      .pipe(gulp.dest(outputFolder);
-    // Returning the stream ensures the Scaffold will execute a .on('end'...) and display the done message
-  }
-});
+glush.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
+```
+Will output:
+```
+  ____  _____ _   _ _____
+ |  _ \|  _  | \ | | ____|
+ | | | | | | |  \| |  _|
+ | |_| | |_| | |\  | |___
+ |____/|_____|_| \_|_____|
 
-scaffold.start([step],done);
+ Thank you for using the Scaffolding Tool!
 ```
 
 [npm-url]: https://www.npmjs.com/package/glush-util
