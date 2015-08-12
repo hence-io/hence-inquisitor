@@ -2,138 +2,122 @@
 
 ## Information
 
-<table>
-<tr>
-<td>Package</td><td>glush-util</td>
-</tr>
-<tr>
-<td>Description</td>
-<td>Utility functions for gulp plugins</td>
-</tr>
-<tr>
-<td>Node Version</td>
-<td>>= 0.10</td>
-</tr>
-</table>
+Utilities for gulp plugins & slush scaffolding, build on gulp-util.
+
+This is an extension built on top of [gulp-util](https://github.com/gulpjs/gulp-util), giving you access to the tools
+ you know, as well as some new tools for your belt.
 
 ## Usage
 
 ```javascript
 var glush = require('glush-util');
+```
 
-glush.log('stuff happened', 'Really it did', glush.colors.magenta('123'));
-glush.beep();
+### Ascii
 
-glush.replaceExtension('file.coffee', '.js'); // file.js
+```javascript
+glush.ascii.done("You're all done!", true); // Outputs directly to console with optional flag
+```
 
-var opt = {
-  name: 'todd',
-  file: someGulpFile
+### Slush Specific
+
+### ScaffoldStep
+
+Create isolated steps are part of your scaffold installation, letting each define and managed it's set of options,
+defaults (ensuring they're set should questions be bypassed), it's prompts to produce using inquirer, and processing
+those results before carrying on to the next step.
+
+```javascript
+var options = {
+  option1: {
+    a: "Do this",
+    b: "Do that"
+  }
 };
-glush.template('test <%= name %> <%= file.path %>', opt) // test todd /js/hi.js
-```
 
-### log(msg...)
+var defaults = {
+  option1: options.option1.a
+};
 
-Logs stuff. Already prefixed with [gulp] and all that. If you pass in multiple arguments it will join them by a space.
+var step = glush.ScaffoldStep({
+  options: options,
+  defaults: defaults,
+  // Content will support details for the current step, offer users some helpful direction on what they're configuring
+  content: {
+    // Displayed before the prompts
+    header: {
+      title: "Main Options",
+      details: "This is an important decision..."
+    }
+    // Displays after the final prompt
+    footer: '---------'
+  },
+  // Inquirer prompts
+  prompts: [{
+    type: 'list',
+    name: 'option1',
+    // Glush extends gulp-util, so you have access to all it's defaults, like the colors object
+    message: "Select your option." + glush.colors.reset.dim('\n  See project documentation to for more information on
+     Hence component types.'),
+    // Display the detailed option values
+    choices: _.values(options.option1),
+    "default": defaults.option1
+  }],
+  // Once all of the prompts are complete, or bypassed, process these set of answers before continuing
+  // Compounds the answers form all previous steps or the defaults set on the scaffold, allowing you to make
+  // decisions based on previous options to affect these results.
+  process: function(answers) {
+    // files
+    var files = answers.files;
+    // dependencies
+    var npm = answers.dependencies.npm;
+    var bower = answers.dependencies.bower;
 
-The default gulp coloring using glush.colors.<color>:
-```
-values (files, module names, etc.) = cyan
-numbers (times, counts, etc) = magenta
-```
-
-### colors
-
-Is an instance of [chalk](https://github.com/sindresorhus/chalk).
-
-### replaceExtension(path, newExtension)
-
-Replaces a file extension in a path. Returns the new path.
-
-### isStream(obj)
-
-Returns true or false if an object is a stream.
-
-### isBuffer(obj)
-
-Returns true or false if an object is a Buffer.
-
-### template(string[, data])
-
-This is a lodash.template function wrapper. You must pass in a valid gulp file object so it is available to the user or it will error. You can not configure any of the delimiters. Look at the [lodash docs](http://lodash.com/docs#template) for more info.
-
-## new File(obj)
-
-This is just [vinyl](https://github.com/wearefractal/vinyl)
-
-```javascript
-var file = new glush.File({
-  base: path.join(__dirname, './fixtures/'),
-  cwd: __dirname,
-  path: path.join(__dirname, './fixtures/test.coffee')
+    // Did the user answer with option a?
+    if(answers.option1 === options.option1.a) {
+      files.push('this glob');
+      _.extend(npm.dependencies, {
+        "custom":"X.X.X"
+      });
+    } else {
+      files.push('that glob');
+      _.extend(bower.dependencies, {
+        "custom":"X.X.X"
+      });
+    }
+  }
 });
 ```
 
-## noop()
+### Scaffold
 
-Returns a stream that does nothing but pass data straight through.
-
-```javascript
-// gulp should be called like this :
-// $ gulp --type production
-gulp.task('scripts', function() {
-  gulp.src('src/**/*.js')
-    .pipe(concat('script.js'))
-    .pipe(glush.env.type === 'production' ? uglify() : glush.noop())
-    .pipe(gulp.dest('dist/'));
-});
-```
-
-## buffer(cb)
-
-This is similar to es.wait but instead of buffering text into one string it buffers anything into an array (so very useful for file objects).
-
-Returns a stream that can be piped to.
-
-The stream will emit one data event after the stream piped to it has ended. The data will be the same array passed to the callback.
-
-Callback is optional and receives two arguments: error and data
+Create a unified scaffold installer, with any number of steps, providing some initial default options, and handling
+the installation with the resulting set of answers from each questions prompts.
 
 ```javascript
-gulp.src('stuff/*.js')
-  .pipe(glush.buffer(function(err, files) {
-
-  }));
-```
-
-## new PluginError(pluginName, message[, options])
-
-- pluginName should be the module name of your plugin
-- message can be a string or an existing error
-- By default the stack will not be shown. Set `options.showStack` to true if you think the stack is important for your error.
-- If you pass an error in as the message the stack will be pulled from that, otherwise one will be created.
-- Note that if you pass in a custom stack string you need to include the message along with that.
-- Error properties will be included in `err.toString()`. Can be omitted by including `{showProperties: false}` in the options.
-
-These are all acceptable forms of instantiation:
-
-```javascript
-var err = new glush.PluginError('test', {
-  message: 'something broke'
+var scaffold = glush.Scaffold({
+  // Set some default options
+  defaults : {
+      someOption: true,
+      dependencies: require('./dependencies.json')
+  },
+  // Content to
+  content = {
+    // Starts off the scaffold installer with an intro message
+    intro: glush.ascii.heading("Welcome to this installer!") + "Follow the prompts to create your package"
+    // When the install completes, this adds a DONE ascii art header, and your description below it easily
+    done: glush.ascii.done("You're all done installing your package!")
+  },
+  install: function (answers) {
+    // Provides all of the prompted answers to act upon here, likely creating optional pipes
+    return gulp.src(answers.files)
+      .pipe(doStuff())
+      .pipe(gulp.dest(outputFolder);
+    // Returning the stream ensures the Scaffold will execute a .on('end'...) and display the done message
+  }
 });
 
-var err = new glush.PluginError({
-  plugin: 'test',
-  message: 'something broke'
-});
-
-var err = new glush.PluginError('test', 'something broke');
-
-var err = new glush.PluginError('test', 'something broke', {showStack: true});
-
-var existingError = new Error('OMG');
-var err = new glush.PluginError('test', existingError, {showStack: true});
+scaffold.start([step],done);
 ```
 
 [npm-url]: https://www.npmjs.com/package/glush-util
