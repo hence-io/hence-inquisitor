@@ -9,10 +9,12 @@ This is an extension built on top of [gulp-util](https://github.com/gulpjs/gulp-
 
 ### Usage
 
+Installing the package:
 ```bash
 $ npm i --save hence-io/glush-util
 ```
 
+Using the package in your gulp/slush project:
 ```javascript
 var glush = require('glush-util');
 ```
