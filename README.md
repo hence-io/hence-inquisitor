@@ -1,4 +1,4 @@
-# glush-util [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
+# glush-util [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status](https://coveralls.io/repos/hence-io/glush-util/badge.svg?branch=master&service=github)](https://coveralls.io/github/hence-io/glush-util?branch=master) [![Dependency Status][depstat-image]][depstat-url]
 
 ## Information
 
