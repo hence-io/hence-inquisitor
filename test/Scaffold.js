@@ -3,8 +3,9 @@ require('should');
 require('mocha');
 
 describe('Scaffold', function(){
-  it('should work on a null', function(done){
-    //util.Scaffold({}).should.equal(util.Scaffold({}));
-    done();
+  it('should perform a blank install successfully', function(done){
+    var step = util.ScaffoldStep({});
+    var scaffold = util.Scaffold({});
+    scaffold.start([step],done);
   });
 });
