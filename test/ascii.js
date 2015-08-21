@@ -7,13 +7,13 @@ require('mocha');
 describe('ascii', function () {
   it('should format a heading', function (done) {
     ascii.heading('Test').should
-      .equal('\n\n ' + ascii.rawCodes.boldUnderline.start + 'Test' + ascii.rawCodes.boldUnderline.end + '\n\n');
+      .equal('\n ' + ascii.rawCodes.boldUnderline.start + 'Test' + ascii.rawCodes.boldUnderline.end + '\n\n');
     done();
   });
 
   it('should format a heading and output to console', function (done) {
     ascii.heading('Test', true).should
-      .equal('\n\n ' + ascii.rawCodes.boldUnderline.start + 'Test' + ascii.rawCodes.boldUnderline.end + '\n\n');
+      .equal('\n ' + ascii.rawCodes.boldUnderline.start + 'Test' + ascii.rawCodes.boldUnderline.end + '\n\n');
     done();
   });
 
