@@ -5,7 +5,11 @@ var es = require('event-stream');
 
 describe('Scaffold', function () {
   it('should perform a blank install successfully', function (done) {
-    var step = util.ScaffoldStep({});
+    var step = util.ScaffoldStep({
+      defaults: {
+        test: true
+      }
+    });
     var scaffold = util.Scaffold({
       //_debug: true,
     });
