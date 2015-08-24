@@ -3,7 +3,7 @@
   "description": "Utilities for gulp plugins & slush scaffolding, build on gulp-util.",
   "version": "0.1.6",
   "repository": "hence-io/glush-util",
-  "author": "Sean 'Blitz' Homer <sean.homer@therefore.ca",
+  "author": "Sean 'Blitz' Homer <sean.homer@therefore.ca>",
   "files": [
     "index.js",
     "lib"
