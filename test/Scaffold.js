@@ -2,14 +2,20 @@ require('mocha');
 var should = require('should');
 var util = require('..');
 var es = require('event-stream');
+var inquirer = require('inquirer');
 
 describe('Scaffold', function () {
-  it('should perform a blank install successfully', function (done) {
-    var step = util.ScaffoldStep({
+  beforeEach(function () {
+    this.scaffoldStepOpts = {
       defaults: {
         test: true
-      }
-    });
+      },
+      prompter: inquirer.createPromptModule()
+    };
+  });
+
+  it('should perform a blank install successfully', function (done) {
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       content: {
         done: 'Woohoo!'
@@ -21,11 +27,7 @@ describe('Scaffold', function () {
     });
   });
   it('should perform a blank install successfully be aborted', function (done) {
-    var step = util.ScaffoldStep({
-      defaults: {
-        test: true
-      }
-    });
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       defaults: {
         aborted: true
@@ -38,11 +40,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully, with debug', function (done) {
-    var step = util.ScaffoldStep({
-      defaults: {
-        test: true
-      }
-    });
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       _debug: true,
       install: function (answers, finalize) {
@@ -56,7 +54,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install and catch an error', function (done) {
-    var step = util.ScaffoldStep({});
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       install: function (answers, finalize) {
         should.exist(answers);
@@ -71,7 +69,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully with a fake install stream', function (done) {
-    var step = util.ScaffoldStep({});
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       install: function (answers, finalize) {
         var stream = es.readArray([1, 2, 3]);
@@ -88,7 +86,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install fail on postInstall with error', function (done) {
-    var step = util.ScaffoldStep({});
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       install: function (answers, finalize) {
         var stream = es.readArray([1, 2, 3]);
@@ -108,7 +106,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank multi-install successfully', function (done) {
-    var step = util.ScaffoldStep({});
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       content: {
         intro: 'Multi-install start',
@@ -123,7 +121,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank multi-install successfully, with debug', function (done) {
-    var step = util.ScaffoldStep({});
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
       _debug: true,
       content: {
