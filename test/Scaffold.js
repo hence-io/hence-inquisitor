@@ -10,8 +10,21 @@ describe('Scaffold', function () {
         test: true
       }
     });
+    var scaffold = util.Scaffold({});
+    scaffold.start([step], function (err) {
+      should.not.exist(err);
+      done();
+    });
+  });
+
+  it('should perform a blank install successfully, with debug', function (done) {
+    var step = util.ScaffoldStep({
+      defaults: {
+        test: true
+      }
+    });
     var scaffold = util.Scaffold({
-      //_debug: true,
+      _debug: true
     });
     scaffold.start([step], function (err) {
       should.not.exist(err);
@@ -51,10 +64,46 @@ describe('Scaffold', function () {
     });
   });
 
+
+  it('should perform a blank install fail on postInstall with error', function (done) {
+    var step = util.ScaffoldStep({});
+    var scaffold = util.Scaffold({
+      install: function (answers, finalize) {
+        var stream = es.readArray([1, 2, 3]);
+
+        should.exist(answers);
+
+        finalize(null, stream);
+      },
+      postInstall: function (answers, finalize) {
+        finalize('This should error');
+      }
+    });
+    scaffold.start([step], function (err) {
+      should.exist(err);
+      done();
+    });
+  });
+
   it('should perform a blank multi-install successfully', function (done) {
     var step = util.ScaffoldStep({});
     var scaffold = util.Scaffold({
-      //_debug: true,
+      content: {
+        intro: 'Multi-install start',
+        done: "Multi-install complete."
+      }
+    });
+    scaffold.startMultiInstall([step], [
+      {option1: 'x'},
+      {option1: 'y'},
+      {option1: 'z'}
+    ], done);
+  });
+
+  it('should perform a blank multi-install successfully, with debug', function (done) {
+    var step = util.ScaffoldStep({});
+    var scaffold = util.Scaffold({
+      _debug: true,
       content: {
         intro: 'Multi-install start',
         done: "Multi-install complete."
