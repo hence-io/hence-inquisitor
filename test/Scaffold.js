@@ -10,7 +10,27 @@ describe('Scaffold', function () {
         test: true
       }
     });
-    var scaffold = util.Scaffold({});
+    var scaffold = util.Scaffold({
+      content: {
+        done: 'Woohoo!'
+      }
+    });
+    scaffold.start([step], function (err) {
+      should.not.exist(err);
+      done();
+    });
+  });
+  it('should perform a blank install successfully be aborted', function (done) {
+    var step = util.ScaffoldStep({
+      defaults: {
+        test: true
+      }
+    });
+    var scaffold = util.Scaffold({
+      defaults: {
+        aborted: true
+      }
+    });
     scaffold.start([step], function (err) {
       should.not.exist(err);
       done();
@@ -24,7 +44,10 @@ describe('Scaffold', function () {
       }
     });
     var scaffold = util.Scaffold({
-      _debug: true
+      _debug: true,
+      install: function (answers, finalize) {
+        finalize();
+      }
     });
     scaffold.start([step], function (err) {
       should.not.exist(err);
@@ -63,7 +86,6 @@ describe('Scaffold', function () {
       done();
     });
   });
-
 
   it('should perform a blank install fail on postInstall with error', function (done) {
     var step = util.ScaffoldStep({});
