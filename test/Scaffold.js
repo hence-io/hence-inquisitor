@@ -10,7 +10,8 @@ describe('Scaffold', function () {
     this.scaffoldStepOpts = {
       defaults: {
         test: true
-      }
+      },
+      prompter: inquirer.createPromptModule()
     };
   });
 
@@ -31,6 +32,7 @@ describe('Scaffold', function () {
       }
     );
   });
+
   it('should perform a blank install successfully be aborted', function (done) {
     var step = util.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = util.Scaffold({
@@ -42,6 +44,35 @@ describe('Scaffold', function () {
       should.not.exist(err);
       done();
     });
+  });
+
+  it('should perform a blank install and receive a preinstall error', function (done) {
+    var step = util.ScaffoldStep(_.defaultsDeep({
+      prompts: [
+        {
+          type: 'confirm',
+          message: 'Test',
+          name: 'q1'
+        }
+      ],
+      process: function (answers, next) {
+        should.exist(answers);
+
+        next({message: 'Error!'});
+      }
+    }, this.scaffoldStepOpts));
+
+    var scaffold = util.Scaffold({
+      defaults: {
+        aborted: true
+      }
+    });
+    scaffold.start([step], function (err) {
+      should.exist(err);
+      done();
+    });
+
+    step.prompter.rl.emit("line");
   });
 
   it('should perform a blank install successfully, with debug', function (done) {
