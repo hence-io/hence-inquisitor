@@ -1,4 +1,4 @@
-# glush-util [![NPM version][npm-image]][npm-url] [![Build Status](https://travis-ci.org/hence-io/glush-util.svg)] (https://travis-ci.org/hence-io/glush-util)] [![Coverage Status](https://coveralls.io/repos/hence-io/glush-util/badge.svg?branch=master&service=github)](https://coveralls.io/github/hence-io/glush-util?branch=master) [![Dependency Status][depstat-image](https://david-dm.org/hence-io/glush-util.svg)](https://david-dm.org/hence-io/glush-util)
+# glush-util [![NPM version][npm-image]][npm-url] [![Build Status](https://travis-ci.org/hence-io/glush-util.svg)](https://travis-ci.org/hence-io/glush-util) [![Coverage Status](https://coveralls.io/repos/hence-io/glush-util/badge.svg?branch=master&service=github)](https://coveralls.io/github/hence-io/glush-util?branch=master) [![Dependency Status](https://david-dm.org/hence-io/glush-util.svg)](https://david-dm.org/hence-io/glush-util)
 
 ## Information
 
