@@ -1,4 +1,5 @@
 require('mocha');
+var _ = require('lodash');
 var should = require('should');
 var util = require('..');
 var es = require('event-stream');
@@ -9,8 +10,7 @@ describe('Scaffold', function () {
     this.scaffoldStepOpts = {
       defaults: {
         test: true
-      },
-      prompter: inquirer.createPromptModule()
+      }
     };
   });
 
@@ -21,10 +21,15 @@ describe('Scaffold', function () {
         done: 'Woohoo!'
       }
     });
-    scaffold.start([step], function (err) {
-      should.not.exist(err);
-      done();
-    });
+    scaffold.start(step, {
+        content: {
+          intro: 'See this here and now'
+        }
+      }, function (err) {
+        should.not.exist(err);
+        done();
+      }
+    );
   });
   it('should perform a blank install successfully be aborted', function (done) {
     var step = util.ScaffoldStep(this.scaffoldStepOpts);
