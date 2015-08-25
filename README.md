@@ -150,6 +150,14 @@ In advanced uses of the scaffold, you may want to provide some CLI usage which n
 prompts for users, and rather instead run through the install process multiple times with different sets of options.
 An alternative start method was introduced to help accommodate this need for you.
 
+This advance usage will:
+
+* Display your scaffolds intro message
+* Automatically run through each steps process function
+* Assume their defaults for each answers that haven't been overridden
+* Execute the install/postInstall against each set of options you pass into the scaffold
+* Once all varied installs have completed, display your scaffolds done message
+
 ##### Usage
 ```bash
 $ slush mygeny argName1 argName2 --debug
