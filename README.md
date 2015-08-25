@@ -23,7 +23,7 @@ var glush = require('glush-util');
 
 ## Streamlined Scaffolding
 
-There are any number of was of creating a slush scaffolding generator, and while it is open and unrestricted,
+There are any number of way of creating a slush scaffolding generator, and while it is open and unrestricted,
 something is lost when no standards are applied to the process in how to build these.
 
 Glush-util in part was born out of this, seeing the need and desire of having some reusable scaffolding structure,
@@ -62,6 +62,7 @@ whatever CLI tools you're leveraging.
 #### Usage
 
 ```javascript
+// scaffold.js
 var scaffold = glush.Scaffold({
   // Set some default options
   defaults : {
@@ -70,7 +71,9 @@ var scaffold = glush.Scaffold({
   },
   content = {
     // Starts off the scaffold installer with an intro message
-    intro: glush.ascii.heading("Welcome to this installer!") + "Follow the prompts to create your package"
+    intro: glush.tempalte("<%= heading %> Follow the prompts to create your package", {
+      heading: glush.ascii.heading("Welcome to this installer!")
+    }),
     // When the install completes, this adds a DONE ascii art header, and your description below it easily
     done: glush.ascii.done("You're all done installing your package!")
   },
@@ -81,33 +84,115 @@ var scaffold = glush.Scaffold({
     }
   },
   // Process and install
-  install: function (answers) {
-    // Provides all of the prompted answers to act upon here, likely creating optional pipes
-    return gulp.src(answers.files)
-      .pipe(doStuff())
-      .pipe(gulp.dest(outputFolder);
+  install: function (answers, resolve) {
+    var err;
+
+    try {
+      // Provides all of the prompted answers to act upon here, likely creating optional pipes
+      var stream = gulp.src(answers.files)
+        .pipe(doStuff())
+        .pipe(gulp.dest(outputFolder);
+    } catch(e) {
+      err = e;
+    }
+
     // Returning the stream ensures the Scaffold will execute a .on('end'...) and display the done message
+    resolve(err, stream);
+  },
+  // PostInstall - Your install/streams have all finished successfully. Perform any final actions or clean up as needed.
+  postInstall(answers, finalize) {
+    doMoreStuffAsync(function(err){
+      if(!err) {
+        doStuff();
+      }
+
+      finalize(err);
+    });
   }
 });
 
-
 // Launch the installer
-gulp.task('default', function(done){
-  scaffold.start([require('./step1')],done);
-);
+module.export = scaffold;
 ```
 
-##### The Scaffold Process
+```javascript
+// slushfile.js
+var scaffold = require('./scaffold.js');
 
-1. ```scaffold.start(steps,doneFn)``` Start will begin the install, by storing and initializing the steps passed in.
-Each
-step is provided a reference to the scaffold object. The installers intro copy will display if provided, and then
-begin to run the first step object.
-2. ```stepX.process(answers)``` The installer will run inquirer against the steps prompts (or by pass them all if they
- all fail their when checks if provided) and begin to process those answers. The complete set of answers is stored on
-  the scaffold object itself, and ongoing set of answers are shared between each step.
-3. ```scaffold.install(answers)``` When all of the steps have finished processing, the final set of answers is ready
-to be acted upon and allow you to perform your desired install method.
+gulp.task('default', function(done){
+  var steps = [
+    require('./step1')
+  ];
+
+  scaffold.start(steps, done);
+});
+```
+
+#### The Scaffold Process
+
+1. ```scaffold.start(steps, overrides, doneFn)``` Start will begin the install, by storing and initializing the steps
+passed  in. Each step is provided a reference to the scaffold object. The installers intro copy will display if provided, and then
+begin to run the first step object. An optional overrides object can be passed in to handle runtime/cli flags which
+could modify your scaffold as you see fit.
+2. ```stepX.process(answers, continue)``` The installer will run inquirer against the steps prompts (or by pass them all
+ if they  all fail their when checks if provided) and begin to process those answers. The complete set of answers is
+ stored on the scaffold object itself, and ongoing set of answers are shared between each step.
+3. ```scaffold.install(answers, resolve)``` When all of the steps have finished processing, the final set of answers is
+ready to be acted upon and allow you to perform your desired install method. When your stream or process to install
+is ready to execute, you can resolve the installer to finalize the scaffolding process.
+
+
+#### Advanced: Multi-install & CLI Flags
+
+##### Purpose
+
+In advanced uses of the scaffold, you may want to provide some CLI usage which negates the need to run through the
+prompts for users, and rather instead run through the install process multiple times with different sets of options.
+An alternative start method was introduced to help accommodate this need for you.
+
+##### Usage
+```bash
+slush mygeny argName1 argName2 --debug
+```
+```javascript
+// slushfile.js
+var _ = require('lodash');
+var glush = require('glush-util');
+var scaffold = require('./scaffold.js');
+
+gulp.task('default', function(done){
+  var steps = [
+    require('./step1')
+  ];
+
+  // Because glush leverages gulp-util, the .env for cli args is available
+  // We must always drop the first non-flagged arg, as it's always your generator's name
+  var cliArgs = _.drop(glush.env._);
+
+  // Check if the CLI had non-flagged args passed through to it
+  if(cliArgs.length) {
+    // Pull a collection of the varied cli arguments to process for the multi installl
+    var installOptions = _.map(cliArgs, function(arg){
+      // Build the unique set of options to be used for each installation
+      return {
+        defaults : {
+          debug: !!glush.env.debug // true if a --debug flag is passed in,
+          name: arg // The unique arg name passed along
+        }
+      };
+    });
+
+    // Run the multi install with options list.
+    scaffold.startMultiInstall(steps, installOptions, done);
+  } else {
+    // If no arg list was passed through the CLI, run the default prompts with some specific CLI flag overrides
+    scaffold.start(steps, {
+      debug: !!glush.env.debug // true if a --debug flag is passed in,
+    }, done);
+  }
+});
+```
+
 
 ### glush.ScaffoldStep
 
@@ -120,8 +205,9 @@ ScaffoldStep is used to help define an isolated set of inquirer prompts to be us
 * ```content``` Controls the console output before and after the step, allowing you to leverage built in Glush
 formatting easily.
 * ```prompts[]``` Provide the various questions to be posed to the user for this step.
-* ```process(answers)``` Process, format, and extend the answer set based on the answers the user provide for the
-prompts in this step, leveraging questions answered in previous steps or defaults from the scaffold.
+* ```process(answers, continue)``` Process, format, and extend the answer set based on the answers the user provide for
+ the prompts in this step, leveraging questions answered in previous steps or defaults from the scaffold. Executing
+ continue moves on to the next step in the scaffold, or if this is the last step, begins the installer.
 
 The ScaffoldSteps are utilized automatically from the Scaffold, and do not require you to manually execute them, or
 share the data between them, it's already handled for you so you can focus on what's important.
@@ -151,7 +237,7 @@ var step = glush.ScaffoldStep({
       details: "This is an important decision..."
     }
     // Displays after the final prompt
-    footer: '---------'
+    footer: glush.ascii.spacer()
   },
   // Inquirer prompts
   prompts: [{
@@ -166,8 +252,9 @@ var step = glush.ScaffoldStep({
   }],
   // Once all of the prompts are complete, or bypassed, process these set of answers before continuing
   // Compounds the answers form all previous steps or the defaults set on the scaffold, allowing you to make
-  // decisions based on previous options to affect these results.
-  process: function(answers) {
+  // decisions based on previous options to affect these results. A callback to control when you're ready to begin
+  // the next step or start installation is provided, taking an optional error parameter.
+  process: function(answers, continue) {
     // files
     var files = answers.files;
     // dependencies
@@ -180,12 +267,20 @@ var step = glush.ScaffoldStep({
       _.extend(npm.dependencies, {
         "custom":"X.X.X"
       });
-    } else {
-      files.push('that glob');
-      _.extend(bower.dependencies, {
-        "custom":"X.X.X"
-      });
     }
+
+    // Run something to instsall system dependencies
+    installDepsOverAsync(function(err) {
+      if(!err) { // Deps installed successfully, apply some more files/options
+        files.push('that glob');
+        _.extend(bower.dependencies, {
+          "custom":"X.X.X"
+        });
+      }
+
+      // Finally relinquish control back to the sacffold
+      continue(err);
+    });
   }
 });
 ```
@@ -201,10 +296,10 @@ Some console helpers to provide standard formatting of headers, and some acsii a
 and optional flag to output directly to console, or by default returns as a string.
 
 * ```glush.ascii.heading(msg, log)``` - A bold underlined heading with double spacing above, and single below
-* ```glush.ascii.spacer(log)``` - A line separator of ------
 * ```glush.ascii.complete(msg, log)``` - Ascii art of the word Complete, with msg being and optional description following
 * ```glush.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
 * ```glush.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
+* ```glush.ascii.spacer(log)``` - A line separator of ------
 
 This command:
 ```javascript
