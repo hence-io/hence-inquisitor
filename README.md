@@ -1,4 +1,4 @@
-# glush-util [![NPM version][npm-image]][npm-url] [![Build Status](https://travis-ci.org/hence-io/glush-util.svg)](https://travis-ci.org/hence-io/glush-util) [![Coverage Status](https://coveralls.io/repos/hence-io/glush-util/badge.svg?branch=master&service=github)](https://coveralls.io/github/hence-io/glush-util?branch=master) [![Dependency Status](https://david-dm.org/hence-io/glush-util.svg)](https://david-dm.org/hence-io/glush-util)
+# glush-util [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
 ## Information
 
@@ -223,9 +223,9 @@ Will output:
 
 [npm-url]: https://www.npmjs.com/package/glush-util
 [npm-image]: https://badge.fury.io/js/glush-util.svg
-[travis-url]: https://travis-ci.org/gulpjs/glush-util
-[travis-image]: https://img.shields.io/travis/gulpjs/glush-util.svg?branch=master
-[coveralls-url]: https://coveralls.io/r/gulpjs/glush-util
-[coveralls-image]: https://img.shields.io/coveralls/gulpjs/glush-util.svg
-[depstat-url]: https://david-dm.org/gulpjs/glush-util
-[depstat-image]: https://david-dm.org/gulpjs/glush-util.svg
+[travis-url]: https://travis-ci.org/hence-io/glush-util.svg
+[travis-image]: https://img.shields.io/travis/hence-io/glush-util.svg?branch=master
+[coveralls-url]: https://coveralls.io/r/hence-io/glush-util
+[coveralls-image]: https://img.shields.io/coveralls/hence-io/glush-util.svg
+[depstat-url]: https://david-dm.org/hence-io/glush-util
+[depstat-image]: https://david-dm.org/hence-io/glush-util.svg
