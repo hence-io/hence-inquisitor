@@ -152,7 +152,7 @@ An alternative start method was introduced to help accommodate this need for you
 
 ##### Usage
 ```bash
-slush mygeny argName1 argName2 --debug
+$ slush mygeny argName1 argName2 --debug
 ```
 ```javascript
 // slushfile.js
