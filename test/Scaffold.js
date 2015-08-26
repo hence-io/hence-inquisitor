@@ -15,23 +15,24 @@ describe('Scaffold', function () {
     };
   });
 
-  //it('should perform a blank install successfully', function (done) {
-  //  var step = util.ScaffoldStep(this.scaffoldStepOpts);
-  //  var scaffold = util.Scaffold({
-  //    content: {
-  //      done: 'Woohoo!'
-  //    }
-  //  });
-  //  scaffold.start(step, {
-  //      content: {
-  //        intro: 'See this here and now'
-  //      }
-  //    }, function (err) {
-  //      should.not.exist(err);
-  //      done();
-  //    }
-  //  );
-  //});
+  it('should perform a blank install successfully', function (done) {
+    var step = util.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = util.Scaffold({
+      content: {
+        done: 'Woohoo!'
+      }
+    });
+    scaffold.start(step, {
+        content: {
+          intro: 'See this here and now',
+          done: 'Not woohoo!'
+        }
+      }, function (err) {
+        should.not.exist(err);
+        done();
+      }
+    );
+  });
 
   it('should perform a blank install successfully be aborted', function (done) {
     var step = util.ScaffoldStep(this.scaffoldStepOpts);
