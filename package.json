@@ -1,7 +1,7 @@
 {
   "name": "glush-util",
   "description": "Utilities for gulp plugins & slush scaffolding, build on gulp-util.",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "repository": "hence-io/glush-util",
   "author": "Sean 'Blitz' Homer <sean.homer@therefore.ca>",
   "files": [
@@ -29,7 +29,8 @@
   },
   "scripts": {
     "test": "jshint *.js lib/*.js test/*.js && mocha",
-    "coveralls": "istanbul cover _mocha --report lcovonly && istanbul-coveralls"
+    "coveralls": "istanbul cover _mocha --report lcovonly && istanbul-coveralls",
+    "docco": "docco -o docs/docco lib/*.js && docco -o docs/docco lib/**/*.js"
   },
   "engines": {
     "node": ">=0.10"

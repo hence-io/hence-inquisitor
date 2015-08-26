@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>validator.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Scaffold.html">
+                  Scaffold.js
+                </a>
+              
+                
+                <a class="source" href="ScaffoldStep.html">
+                  ScaffoldStep.js
+                </a>
+              
+                
+                <a class="source" href="ascii.html">
+                  ascii.js
+                </a>
+              
+                
+                <a class="source" href="inquirer.html">
+                  inquirer.js
+                </a>
+              
+                
+                <a class="source" href="validator.html">
+                  validator.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>validator.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> validator = <span class="hljs-built_in">require</span>(<span class="hljs-string">'validator'</span>);
+
+validator.extend(<span class="hljs-string">'isTruthy'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v</span>) </span>{
+  <span class="hljs-keyword">return</span> !!(v === <span class="hljs-literal">true</span> || v === <span class="hljs-string">"true"</span> || v === <span class="hljs-string">"y"</span> || v === <span class="hljs-string">"yes"</span> || v === <span class="hljs-string">"Y"</span> || v === <span class="hljs-string">"Yes"</span>);
+});
+
+<span class="hljs-built_in">module</span>.exports = validator;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
