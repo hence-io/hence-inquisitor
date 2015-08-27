@@ -1,5 +1,5 @@
 require('mocha');
-var util = require('..');
+var glush = require('..');
 var _ = require('lodash');
 var async = require('async');
 var should = require('should');
@@ -23,8 +23,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold(this.scaffoldOpts);
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold(this.scaffoldOpts);
     scaffold.start(step, function (err) {
         should.not.exist(err);
         done();
@@ -33,11 +33,12 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully be aborted', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       defaults: {
         aborted: true
-      }
+      },
+      install: function (a, b) {b();}
     });
     scaffold.start([step], function (err) {
       should.not.exist(err);
@@ -46,7 +47,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install and receive a preinstall error', function (done) {
-    var step = util.ScaffoldStep(_.defaultsDeep({
+    var step = glush.ScaffoldStep(_.defaultsDeep({
       prompts: [
         {
           type: 'confirm',
@@ -61,7 +62,7 @@ describe('Scaffold', function () {
       }
     }, this.scaffoldStepOpts));
 
-    var scaffold = util.Scaffold({
+    var scaffold = glush.Scaffold({
       defaults: {
         aborted: true
       }
@@ -75,22 +76,37 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully, with debug', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       debug: true,
       install: function (answers, finalize) {
         finalize();
       }
     });
-    scaffold.start([step], function (err) {
+    scaffold.start([step], function (err, answers) {
+      should.exist(answers);
+      should.not.exist(err);
+      done();
+    });
+  });
+
+  it('should perform a blank install successfully, without any steps', function (done) {
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
+      install: function (answers, finalize) {
+        finalize();
+      }
+    });
+    scaffold.start(function (err, answers) {
+      should.exist(answers);
       should.not.exist(err);
       done();
     });
   });
 
   it('should perform a blank install and catch an error', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       install: function (answers, finalize) {
         should.exist(answers);
 
@@ -104,8 +120,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully with a fake install stream', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       install: function (answers, finalize) {
         var stream = es.readArray([1, 2, 3]);
 
@@ -121,8 +137,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install fail on postInstall with error', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       install: function (answers, finalize) {
         var stream = es.readArray([1, 2, 3]);
 

@@ -1,7 +1,7 @@
 require('mocha');
 var _ = require('lodash');
 var should = require('should');
-var util = require('..');
+var glush = require('..');
 var es = require('event-stream');
 var inquirer = require('inquirer');
 
@@ -23,7 +23,7 @@ describe('ScaffoldStep', function () {
   });
 
   it('should perform a blank step inquire successfully', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
     step.inquire(function (err, answers) {
       should.not.exist(err);
       should.exist(answers);
@@ -32,7 +32,7 @@ describe('ScaffoldStep', function () {
   });
 
   it('should perform a blank step inquire successfully, with a detailed header', function (done) {
-    var step = util.ScaffoldStep(_.defaultsDeep({
+    var step = glush.ScaffoldStep(_.defaultsDeep({
       prompts: [
         {
           type: "confirm",
@@ -57,7 +57,7 @@ describe('ScaffoldStep', function () {
   });
 
   it('should perform a simple step with a prompt successfully', function (done) {
-    var step = util.ScaffoldStep(_.defaultsDeep({
+    var step = glush.ScaffoldStep(_.defaultsDeep({
       prompts: [
         {
           type: "confirm",

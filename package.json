@@ -29,7 +29,8 @@
   },
   "scripts": {
     "test": "jshint *.js lib/*.js test/*.js && mocha",
-    "coveralls": "istanbul cover _mocha --report lcovonly && istanbul-coveralls",
+    "coverage": "istanbul cover _mocha",
+    "coveralls": "npm run coverage && istanbul-coveralls",
     "docco": "docco -o docs/docco lib/*.js && docco -o docs/docco lib/**/*.js"
   },
   "engines": {

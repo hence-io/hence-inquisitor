@@ -1,5 +1,5 @@
 require('mocha');
-var util = require('..');
+var glush = require('..');
 var _ = require('lodash');
 var async = require('async');
 var should = require('should');
@@ -23,8 +23,8 @@ describe('Scaffold Multi Install', function () {
   });
 
   it('should perform a blank multi-install successfully', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       content: {
         intro: 'Multi-install start',
         done: "Multi-install complete."
@@ -38,8 +38,8 @@ describe('Scaffold Multi Install', function () {
   });
 
   it('should perform a blank multi-install successfully, with debug', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold({
       debug: true,
       content: {
         intro: 'Multi-install start',

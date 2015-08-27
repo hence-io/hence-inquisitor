@@ -1,5 +1,5 @@
 require('mocha');
-var util = require('..');
+var glush = require('..');
 var _ = require('lodash');
 var async = require('async');
 var should = require('should');
@@ -23,8 +23,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully, with overrides', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold(_.extend(this.scaffoldOpts, {
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold(_.extend(this.scaffoldOpts, {
       debug: true
     }));
     var introMsg = 'See this here and now';
@@ -48,53 +48,53 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install with all argument options: no args', function (done) {
-    var scaffold = util.Scaffold();
+    var scaffold = glush.Scaffold();
     scaffold.done = done;
     scaffold.start();
   });
 
   it('should perform a blank install with all argument options: step args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.done = done;
     scaffold.start(step);
   });
 
   it('should perform a blank install with all argument options: options args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.done = done;
     scaffold.start(this.scaffoldOpts);
   });
 
   it('should perform a blank install with all argument options: done args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.start(done);
   });
 
   it('should perform a blank install with all argument options: step & options args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.done = done;
     scaffold.start(step, this.scaffoldOpts);
   });
 
   it('should perform a blank install with all argument options: step & done args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.start(step, done);
   });
 
   it('should perform a blank install with all argument options: options & done args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.start(this.scaffoldOpts, done);
   });
 
   it('should perform a blank install with all argument options: all args', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold();
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold();
     scaffold.start(step, this.scaffoldOpts, done);
   });
 });
