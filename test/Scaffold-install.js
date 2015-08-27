@@ -1,7 +1,8 @@
 require('mocha');
-var _ = require('lodash');
-var should = require('should');
 var util = require('..');
+var _ = require('lodash');
+var async = require('async');
+var should = require('should');
 var es = require('event-stream');
 var inquirer = require('inquirer');
 
@@ -13,21 +14,18 @@ describe('Scaffold', function () {
       },
       prompter: inquirer.createPromptModule()
     };
+
+    this.scaffoldOpts = {
+      content: {
+        done: 'Woohoo!'
+      }
+    };
   });
 
   it('should perform a blank install successfully', function (done) {
     var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
-      content: {
-        done: 'Woohoo!'
-      }
-    });
-    scaffold.start(step, {
-        content: {
-          intro: 'See this here and now',
-          done: 'Not woohoo!'
-        }
-      }, function (err) {
+    var scaffold = util.Scaffold(this.scaffoldOpts);
+    scaffold.start(step, function (err) {
         should.not.exist(err);
         done();
       }
@@ -140,36 +138,5 @@ describe('Scaffold', function () {
       should.exist(err);
       done();
     });
-  });
-
-  it('should perform a blank multi-install successfully', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
-      content: {
-        intro: 'Multi-install start',
-        done: "Multi-install complete."
-      }
-    });
-    scaffold.startMultiInstall([step], [
-      {option1: 'x'},
-      {option1: 'y'},
-      {option1: 'z'}
-    ], done);
-  });
-
-  it('should perform a blank multi-install successfully, with debug', function (done) {
-    var step = util.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = util.Scaffold({
-      debug: true,
-      content: {
-        intro: 'Multi-install start',
-        done: "Multi-install complete."
-      }
-    });
-    scaffold.startMultiInstall([step], [
-      {option1: 'x'},
-      {option1: 'y'},
-      {option1: 'z'}
-    ], done);
   });
 });
