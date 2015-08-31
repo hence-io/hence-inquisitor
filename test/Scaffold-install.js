@@ -37,10 +37,11 @@ describe('Scaffold', function () {
     var step = glush.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = glush.Scaffold(this.scaffoldOpts);
     scaffold.steps.push(step);
+    scaffold.debug = true;
     scaffold.run(function (err) {
       should.not.exist(err);
       done();
-    }, [
+    },[
       'first',
       'second',
       'third'
