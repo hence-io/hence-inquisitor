@@ -32,6 +32,31 @@ describe('Scaffold', function () {
     );
   });
 
+
+  it('should perform a blank install successfully using run w/ args', function (done) {
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    scaffold.steps.push(step);
+    scaffold.run(function (err) {
+      should.not.exist(err);
+      done();
+    }, [
+      'first',
+      'second',
+      'third'
+    ]);
+  });
+
+  it('should perform a blank install successfully using run', function (done) {
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    scaffold.steps.push(step);
+    scaffold.run(function (err) {
+      should.not.exist(err);
+      done();
+    });
+  });
+
   it('should perform a blank install without valid steps should fail', function (done) {
     var scaffold = glush.Scaffold(this.scaffoldOpts);
     scaffold.start([{}], function (err) {
