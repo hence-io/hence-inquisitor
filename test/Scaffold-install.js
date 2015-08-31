@@ -32,6 +32,15 @@ describe('Scaffold', function () {
     );
   });
 
+  it('should perform a blank install without valid steps should fail', function (done) {
+    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    scaffold.start([{}], function (err) {
+        should.exist(err);
+        done();
+      }
+    );
+  });
+
   it('should perform a blank install successfully be aborted', function (done) {
     var step = glush.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = glush.Scaffold({
