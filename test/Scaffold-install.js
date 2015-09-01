@@ -16,6 +16,9 @@ describe('Scaffold', function () {
     };
 
     this.scaffoldOpts = {
+      defaults: {
+        scaffoldTest: true
+      },
       content: {
         done: 'Woohoo!'
       }
@@ -32,7 +35,6 @@ describe('Scaffold', function () {
     );
   });
 
-
   it('should perform a blank install successfully using run w/ args', function (done) {
     var step = glush.ScaffoldStep(this.scaffoldStepOpts);
     var scaffold = glush.Scaffold(this.scaffoldOpts);
@@ -41,7 +43,31 @@ describe('Scaffold', function () {
     scaffold.run(function (err) {
       should.not.exist(err);
       done();
-    },[
+    }, [
+      'first',
+      'second',
+      'third'
+    ]);
+  });
+
+  it('should perform a blank install successfully using run w/ args and test cliArg', function (done) {
+    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = glush.Scaffold(_.extend(this.scaffoldOpts, {
+      cliArg: function (arg) {
+        should.exist(arg);
+        should.exist(this);
+        should.exist(this.defaults);
+        should(this.defaults.scaffoldTest).equal(true);
+
+        return {};
+      }
+    }));
+    scaffold.steps.push(step);
+    scaffold.debug = true;
+    scaffold.run(function (err) {
+      should.not.exist(err);
+      done();
+    }, [
       'first',
       'second',
       'third'
