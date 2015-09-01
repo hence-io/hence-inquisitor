@@ -1,22 +1,22 @@
-# glush-util [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
+# Inquisitor [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
 ## Information
 
-Utilities for gulp plugins & slush scaffolding, build on gulp-util.
+A streamlined scaffolding installer utility, incorporating inquirer and glup-utils at it's core.
 
 This is an extension built on top of [gulp-util](https://github.com/gulpjs/gulp-util), giving you access to the tools
- you know, as well as some new tools for your belt.
+ you know, as well as focused workflow tool to help build scaffolding and installs by leveraging the power of inquirer.
 
 ### Usage
 
 Installing the package:
 ```bash
-$ npm i --save hence-io/glush-util
+$ npm i --save hence-io/hence-inquisitor
 ```
 
 Using the package in your gulp/slush project:
 ```javascript
-var glush = require('glush-util');
+var glush = require('hence-inquisitor');
 ```
 
 >
@@ -26,7 +26,7 @@ var glush = require('glush-util');
 There are any number of way of creating a slush scaffolding generator, and while it is open and unrestricted,
 something is lost when no standards are applied to the process in how to build these.
 
-Glush-util in part was born out of this, seeing the need and desire of having some reusable scaffolding structure,
+Inquisitor in part was born out of this, seeing the need and desire of having some reusable scaffolding structure,
 while remaining as flexible as possible. One library in particular was leveraged to help achieve this goal in
 managing a console based installer, and that library is [inquirer](https://github.com/sboudrias/Inquirer.js).
 
@@ -38,7 +38,7 @@ multiple sub-generators (or other generators) with ease, helping to keep your ge
 While these tools were primarily designed to assist in creating Slush generators, they can be adopted to power any node
 based scaffolding tool you may require. Nothing is imposed on what the installer does, it's up to you.
 
-### glush.Scaffold
+### inquisitor.Scaffold
 
 #### Purpose
 
@@ -63,7 +63,7 @@ whatever CLI tools you're leveraging.
 
 ```javascript
 // scaffold.js
-var scaffold = glush.Scaffold({
+var scaffold = inquisitor.Scaffold({
   // Set some default options
   defaults : {
       someOption: true,
@@ -71,11 +71,11 @@ var scaffold = glush.Scaffold({
   },
   content = {
     // Starts off the scaffold installer with an intro message
-    intro: glush.tempalte("<%= heading %> Follow the prompts to create your package", {
-      heading: glush.ascii.heading("Welcome to this installer!")
+    intro: inquisitor.tempalte("<%= heading %> Follow the prompts to create your package", {
+      heading: inquisitor.ascii.heading("Welcome to this installer!")
     }),
     // When the install completes, this adds a DONE ascii art header, and your description below it easily
-    done: glush.ascii.done("You're all done installing your package!")
+    done: inquisitor.ascii.done("You're all done installing your package!")
   },
   inquirer {
     // Provide a validation check as to whether or not to include a prompt based on this check.
@@ -165,7 +165,7 @@ $ slush mygeny argName1 argName2 --debug
 ```javascript
 // slushfile.js
 var _ = require('lodash');
-var glush = require('glush-util');
+var inquisitor = require('hence-inquisitor');
 var scaffold = require('./scaffold.js');
 
 gulp.task('default', function(done){
@@ -173,9 +173,9 @@ gulp.task('default', function(done){
     require('./step1')
   ];
 
-  // Because glush leverages gulp-util, the .env for cli args is available
+  // Because inquisitor leverages gulp-util, the .env for cli args is available
   // We must always drop the first non-flagged arg, as it's always your generator's name
-  var cliArgs = _.drop(glush.env._);
+  var cliArgs = _.drop(inquisitor.env._);
 
   // Check if the CLI had non-flagged args passed through to it
   if(cliArgs.length) {
@@ -184,7 +184,7 @@ gulp.task('default', function(done){
       // Build the unique set of options to be used for each installation
       return {
         defaults : {
-          debug: !!glush.env.debug // true if a --debug flag is passed in,
+          debug: !!inquisitor.env.debug // true if a --debug flag is passed in,
           name: arg // The unique arg name passed along
         }
       };
@@ -195,14 +195,14 @@ gulp.task('default', function(done){
   } else {
     // If no arg list was passed through the CLI, run the default prompts with some specific CLI flag overrides
     scaffold.start(steps, {
-      debug: !!glush.env.debug // true if a --debug flag is passed in,
+      debug: !!inquisitor.env.debug // true if a --debug flag is passed in,
     }, done);
   }
 });
 ```
 
 
-### glush.ScaffoldStep
+### inquisitor.ScaffoldStep
 
 #### Purpose
 
@@ -210,7 +210,7 @@ ScaffoldStep is used to help define an isolated set of inquirer prompts to be us
 
 * ```options``` Define a set of unique options supporting the prompts in this step.
 * ```defaults``` Set the default options which should be assigned, even if the prompt doesn't pass it's when check.
-* ```content``` Controls the console output before and after the step, allowing you to leverage built in Glush
+* ```content``` Controls the console output before and after the step, allowing you to leverage built in inquisitor
 formatting easily.
 * ```prompts[]``` Provide the various questions to be posed to the user for this step.
 * ```process(answers, continue)``` Process, format, and extend the answer set based on the answers the user provide for
@@ -234,7 +234,7 @@ var defaults = {
   option1: options.option1.a
 };
 
-var step = glush.ScaffoldStep({
+var step = inquisitor.ScaffoldStep({
   options: options,
   defaults: defaults,
   // Content will support details for the current step, offer users some helpful direction on what they're configuring
@@ -245,14 +245,14 @@ var step = glush.ScaffoldStep({
       details: "This is an important decision..."
     }
     // Displays after the final prompt
-    footer: glush.ascii.spacer()
+    footer: inquisitor.ascii.spacer()
   },
   // Inquirer prompts
   prompts: [{
     type: 'list',
     name: 'option1',
-    // Glush extends gulp-util, so you have access to all it's defaults, like the colors object
-    message: "Select your option." + glush.colors.reset.dim('\n  See project documentation to for more information on
+    // inquisitor extends gulp-util, so you have access to all it's defaults, like the colors object
+    message: "Select your option." + inquisitor.colors.reset.dim('\n  See project documentation to for more information on
      Hence component types.'),
     // Display the detailed option values
     choices: _.values(options.option1),
@@ -303,15 +303,15 @@ module.exports = step;
 Some console helpers to provide standard formatting of headers, and some acsii art.  Each take a message/label, and
 and optional flag to output directly to console, or by default returns as a string.
 
-* ```glush.ascii.heading(msg, log)``` - A bold underlined heading with double spacing above, and single below
-* ```glush.ascii.complete(msg, log)``` - Ascii art of the word Complete, with msg being and optional description following
-* ```glush.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
-* ```glush.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
-* ```glush.ascii.spacer(log)``` - A line separator of ------
+* ```inquisitor.ascii.heading(msg, log)``` - A bold underlined heading with double spacing above, and single below
+* ```inquisitor.ascii.complete(msg, log)``` - Ascii art of the word Complete, with msg being and optional description following
+* ```inquisitor.ascii.aborted(msg, log)``` - Ascii art of the word Aborted, with msg being and optional description following
+* ```inquisitor.ascii.done(msg, log)``` - Ascii art of the word Done, with msg being and optional description following
+* ```inquisitor.ascii.spacer(log)``` - A line separator of ------
 
 This command:
 ```javascript
-glush.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
+inquisitor.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
 ```
 Will output:
 ```
@@ -324,11 +324,11 @@ Will output:
  Thank you for using the Scaffolding Tool!
 ```
 
-[npm-url]: https://www.npmjs.com/package/glush-util
-[npm-image]: https://badge.fury.io/js/glush-util.svg
-[travis-url]: https://travis-ci.org/hence-io/glush-util.svg
-[travis-image]: https://img.shields.io/travis/hence-io/glush-util.svg?branch=master
-[coveralls-url]: https://coveralls.io/r/hence-io/glush-util
-[coveralls-image]: https://img.shields.io/coveralls/hence-io/glush-util.svg
-[depstat-url]: https://david-dm.org/hence-io/glush-util
-[depstat-image]: https://david-dm.org/hence-io/glush-util.svg
+[npm-url]: https://www.npmjs.com/package/hence-inquisitor
+[npm-image]: https://badge.fury.io/js/hence-inquisitor.svg
+[travis-url]: https://travis-ci.org/hence-io/hence-inquisitor.svg
+[travis-image]: https://img.shields.io/travis/hence-io/hence-inquisitor.svg?branch=master
+[coveralls-url]: https://coveralls.io/r/hence-io/hence-inquisitor
+[coveralls-image]: https://img.shields.io/coveralls/hence-io/hence-inquisitor.svg
+[depstat-url]: https://david-dm.org/hence-io/hence-inquisitor
+[depstat-image]: https://david-dm.org/hence-io/hence-inquisitor.svg

@@ -1,5 +1,5 @@
-var glush = require('..');
-var ascii = glush.ascii;
+var inquisitor = require('..');
+var ascii = inquisitor.ascii;
 
 require('should');
 require('mocha');

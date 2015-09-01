@@ -1,8 +1,8 @@
 {
-  "name": "glush-util",
-  "description": "Utilities for gulp plugins & slush scaffolding, build on gulp-util.",
-  "version": "0.1.7",
-  "repository": "hence-io/glush-util",
+  "name": "hence-inquisitor",
+  "description": "A streamlined scaffolding installer utility, incorporating inquirer and glup-utils at it's core.",
+  "version": "0.1.8",
+  "repository": "hence-io/hence-inquisitor",
   "author": "Sean 'Blitz' Homer <sean.homer@therefore.ca>",
   "files": [
     "index.js",

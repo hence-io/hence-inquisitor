@@ -1,5 +1,6 @@
 require('mocha');
-var glush = require('..');
+
+var inquisitor = require('..');
 var _ = require('lodash');
 var async = require('async');
 var should = require('should');
@@ -26,8 +27,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold(this.scaffoldOpts);
     scaffold.start(step, function (err) {
         should.not.exist(err);
         done();
@@ -36,8 +37,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully using run w/ args', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold(this.scaffoldOpts);
     scaffold.steps.push(step);
     scaffold.debug = true;
     scaffold.run(function (err) {
@@ -51,8 +52,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully using run w/ args and test cliArg', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold(_.extend(this.scaffoldOpts, {
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold(_.extend(this.scaffoldOpts, {
       cliArg: function (arg) {
         should.exist(arg);
         should.exist(this);
@@ -75,8 +76,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully using run', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold(this.scaffoldOpts);
     scaffold.steps.push(step);
     scaffold.run(function (err) {
       should.not.exist(err);
@@ -85,7 +86,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install without valid steps should fail', function (done) {
-    var scaffold = glush.Scaffold(this.scaffoldOpts);
+    var scaffold = inquisitor.Scaffold(this.scaffoldOpts);
     scaffold.start([{}], function (err) {
         should.exist(err);
         done();
@@ -94,8 +95,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully be aborted', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold({
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold({
       defaults: {
         aborted: true
       },
@@ -108,7 +109,7 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install and receive a preinstall error', function (done) {
-    var step = glush.ScaffoldStep(_.defaultsDeep({
+    var step = inquisitor.ScaffoldStep(_.defaultsDeep({
       prompts: [
         {
           type: 'confirm',
@@ -123,7 +124,7 @@ describe('Scaffold', function () {
       }
     }, this.scaffoldStepOpts));
 
-    var scaffold = glush.Scaffold({
+    var scaffold = inquisitor.Scaffold({
       defaults: {
         aborted: true
       }
@@ -137,8 +138,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully, with debug', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold({
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold({
       debug: true,
       install: function (answers, finalize) {
         finalize();
@@ -152,8 +153,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully, without any steps', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold({
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold({
       install: function (answers, finalize) {
         finalize();
       }
@@ -166,8 +167,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install and catch an error', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold({
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold({
       install: function (answers, finalize) {
         should.exist(answers);
 
@@ -181,8 +182,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install successfully with a fake install stream', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold({
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold({
       install: function (answers, finalize) {
         var stream = es.readArray([1, 2, 3]);
 
@@ -198,8 +199,8 @@ describe('Scaffold', function () {
   });
 
   it('should perform a blank install fail on postInstall with error', function (done) {
-    var step = glush.ScaffoldStep(this.scaffoldStepOpts);
-    var scaffold = glush.Scaffold({
+    var step = inquisitor.ScaffoldStep(this.scaffoldStepOpts);
+    var scaffold = inquisitor.Scaffold({
       install: function (answers, finalize) {
         var stream = es.readArray([1, 2, 3]);
 
