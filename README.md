@@ -308,7 +308,8 @@ and optional flag to output directly to console, or by default returns as a stri
 
 This command:
 ```javascript
-inquisitor.ascii.done("Thank you for using the Scaffolding Tool!", true); // Outputs directly to console with optional flag
+// Outputs directly to console with optional flag
+inquisitor.ascii.done("Thank you for using the Scaffolding Tool!", true);
 ```
 Will output:
 ```
