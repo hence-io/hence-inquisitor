@@ -130,6 +130,7 @@
 
       <span class="hljs-keyword">if</span> (scaffold.debug) {
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"&gt;&gt; Beginning step with default answers of: "</span>, answers);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"&gt;&gt; Step config: "</span>, _.omit(self, <span class="hljs-string">'scaffold'</span>));
       }</pre></div></div>
             
         </li>
@@ -148,7 +149,22 @@ by passed.</p>
             
             <div class="content"><div class='highlight'><pre>      _.each(prompts, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prompt</span>) </span>{
         _.extend(prompt, {
-          step: self
+          step: self,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Include a reference to the inquirer checks and validation to be readily accessible by the step’s prompts.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          inquirer: scaffold.inquirer
         });
 
         <span class="hljs-keyword">if</span> (_.isFunction(prompt.when) &amp;&amp; !prompt.when()) {
@@ -159,11 +175,11 @@ by passed.</p>
         </li>
         
         
-        <li id="section-5">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>If all questions are being by passed or if the installer has flagged we’re skipping to install, finalize and
 move on without triggering inquirer, so the answers/defaults are still processed.</p>
@@ -177,11 +193,11 @@ move on without triggering inquirer, so the answers/defaults are still processed
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>We have questions to be answered</p>
 
@@ -192,11 +208,11 @@ move on without triggering inquirer, so the answers/defaults are still processed
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Display the header</p>
 
@@ -218,11 +234,11 @@ move on without triggering inquirer, so the answers/defaults are still processed
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Display the footer</p>
 
@@ -243,11 +259,11 @@ move on without triggering inquirer, so the answers/defaults are still processed
         </li>
         
         
-        <li id="section-9">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>Process any isTruthy values for potential booleans, saving the dev from having to do this after the fact.</p>
 

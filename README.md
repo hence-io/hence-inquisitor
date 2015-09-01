@@ -1,11 +1,12 @@
 # Inquisitor [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
-## Information
+## About
 
 A streamlined scaffolding installer utility, incorporating inquirer and glup-utils at it's core.
 
 This is an extension built on top of [gulp-util](https://github.com/gulpjs/gulp-util), giving you access to the tools
- you know, as well as focused workflow tool to help build scaffolding and installs by leveraging the power of inquirer.
+ you know, as well as focused workflow tool to help build scaffolding and installs by leveraging the power of
+ [inquirer](https://github.com/SBoudrias/Inquirer.js).
 
 ### Usage
 
