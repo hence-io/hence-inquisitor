@@ -64,6 +64,11 @@ whatever CLI tools you're leveraging.
 ```javascript
 // scaffold.js
 var scaffold = inquisitor.Scaffold({
+  // Steps for this scaffold
+  steps : [
+    require('./scaffold/step-install-options'),
+    require('./scaffold/step-confirmation')
+  ],
   // Set some default options
   defaults : {
       someOption: true,
@@ -117,21 +122,15 @@ module.export = scaffold;
 
 ```javascript
 // slushfile.js
-var scaffold = require('./scaffold.js');
+var scaffold = require('./scaffold.js').run;
 
-gulp.task('default', function(done){
-  var steps = [
-    require('./step1')
-  ];
-
-  scaffold.start(steps, done);
-});
+gulp.task('default', scaffold);
 ```
 
 #### The Scaffold Process
 
-1. ```scaffold.start(steps, overrides, doneFn)``` Start will begin the install, by storing and initializing the steps
-passed  in. Each step is provided a reference to the scaffold object. The installers intro copy will display if provided, and then
+1. ```scaffold.run(doneFn)``` This will begin the install, by initializing the steps passed  in. Each
+step is provided a reference to the scaffold object. The installers intro copy will display if provided, and then
 begin to run the first step object. An optional overrides object can be passed in to handle runtime/cli flags which
 could modify your scaffold as you see fit.
 2. ```stepX.process(answers, continue)``` The installer will run inquirer against the steps prompts (or by pass them all
@@ -159,48 +158,46 @@ This advance usage will:
 * Once all varied installs have completed, display your scaffolds done message
 
 ##### Usage
+
+Adding a single function to the previous scaffold example will allow you to control how each argument builds it's
+unique options to be used during install. The run command will automatically detect non-flag arguments to be used in
+a multi-installation for you.
+
 ```bash
 $ slush mygeny argName1 argName2 --debug
 ```
+
 ```javascript
-// slushfile.js
-var _ = require('lodash');
-var inquisitor = require('hence-inquisitor');
-var scaffold = require('./scaffold.js');
-
-gulp.task('default', function(done){
-  var steps = [
-    require('./step1')
-  ];
-
-  // Because inquisitor leverages gulp-util, the .env for cli args is available
-  // We must always drop the first non-flagged arg, as it's always your generator's name
-  var cliArgs = _.drop(inquisitor.env._);
-
-  // Check if the CLI had non-flagged args passed through to it
-  if(cliArgs.length) {
-    // Pull a collection of the varied cli arguments to process for the multi installl
-    var installOptions = _.map(cliArgs, function(arg){
-      // Build the unique set of options to be used for each installation
-      return {
-        defaults : {
-          debug: !!inquisitor.env.debug // true if a --debug flag is passed in,
-          name: arg // The unique arg name passed along
-        }
-      };
-    });
-
-    // Run the multi install with options list.
-    scaffold.startMultiInstall(steps, installOptions, done);
-  } else {
-    // If no arg list was passed through the CLI, run the default prompts with some specific CLI flag overrides
-    scaffold.start(steps, {
-      debug: !!inquisitor.env.debug // true if a --debug flag is passed in,
-    }, done);
+// scaffold.js
+var scaffold = inquisitor.Scaffold({
+  ...
+  defaults: {
+    // We'll set a default for this scaffold based on the command line flags
+    // If the --git flag is set, we'll want to do something...
+    enableGit: !!inquisitor.env.git
   }
-});
-```
+  // This function will automatically be exuted by .run and used to process the named arguments passed on the command line
+  cliArg: function(arg){
+    // We have accesss to the full scaffold while these are being processed, allwing you to access things as needed.
+    var defaults = this.defaults;
 
+    // Build the unique set of options to be used for each installation
+    return {
+      defaults : {
+        // The unique arg name passed along the CLI for us to do with as we see fit
+        name: arg
+        // Since we have git being controlled based on the CLI flags, we can act upon it here should we need to,
+        // making this installation varied from others
+        anotherField : defaults.git ? 'Do this' : 'Do that'
+      }
+    };
+  },
+  ...
+});
+
+// Launch the installer
+module.export = scaffold;
+```
 
 ### inquisitor.ScaffoldStep
 
