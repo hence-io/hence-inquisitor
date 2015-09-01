@@ -1,7 +1,7 @@
 {
   "name": "hence-inquisitor",
   "description": "A streamlined scaffolding installer utility, incorporating inquirer and glup-utils at it's core.",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "repository": "hence-io/hence-inquisitor",
   "author": "Sean 'Blitz' Homer <sean.homer@therefore.ca>",
   "files": [
