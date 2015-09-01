@@ -326,7 +326,7 @@ Will output:
 [npm-image]: https://badge.fury.io/js/hence-inquisitor.svg
 [travis-url]: https://travis-ci.org/hence-io/hence-inquisitor.svg
 [travis-image]: https://img.shields.io/travis/hence-io/hence-inquisitor.svg?branch=master
-[coveralls-url]: https://coveralls.io/r/hence-io/hence-inquisitor
-[coveralls-image]: https://img.shields.io/coveralls/hence-io/hence-inquisitor.svg
+[coveralls-url]: https://coveralls.io/r/hence-io/glush-util
+[coveralls-image]: https://img.shields.io/coveralls/hence-io/glush-util.svg
 [depstat-url]: https://david-dm.org/hence-io/hence-inquisitor
 [depstat-image]: https://david-dm.org/hence-io/hence-inquisitor.svg
