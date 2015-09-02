@@ -20,7 +20,7 @@ Using the package in your gulp/slush project:
 var glush = require('hence-inquisitor');
 ```
 
->
+---
 
 ## Streamlined Scaffolding
 
@@ -292,7 +292,8 @@ var step = inquisitor.ScaffoldStep({
 ```
 
 module.exports = step;
->
+
+---
 
 ## Supporting Tools
 
